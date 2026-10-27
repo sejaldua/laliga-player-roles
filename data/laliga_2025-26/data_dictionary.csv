@@ -265,7 +265,7 @@ player_season_per90,padj_clearances_p90,float64,per 90,per90,,"Clearances, posse
 heatmap_points,league,object,,key/dimension,,League key (laliga / epl)
 heatmap_points,season_id,int64,,key/dimension,,Sofascore season id
 heatmap_points,player_id,int64,,key/dimension,,Sofascore player id (primary key across tables)
-heatmap_points,x,int64,0-100,key/dimension,,"Heatmap x (0 = own goal line, 100 = opposition goal line)"
+heatmap_points,x,int64,0-100,key/dimension,,"Heatmap x (0 = own goal line, 100 = opposition goal line). Raw points include corner kicks (x >= 98 and y <= 2 or y >= 98); filter them out for open-play maps"
 heatmap_points,y,int64,0-100,key/dimension,,"Heatmap y (~0 = right touchline, ~100 = left)"
 heatmap_points,count,int64,count,key/dimension,,Touches/actions recorded at this point
 heatmap_zones,league,object,,key/dimension,,League key (laliga / epl)
@@ -282,7 +282,8 @@ heatmap_summary,league,object,,key/dimension,,League key (laliga / epl)
 heatmap_summary,season_id,int64,,key/dimension,,Sofascore season id
 heatmap_summary,player_id,int64,,key/dimension,,Sofascore player id (primary key across tables)
 heatmap_summary,heatmap_matches,int64,count,heatmap,,Matches contributing to the season heatmap
-heatmap_summary,heatmap_points_total,int64,count,heatmap,,Sum of heatmap point counts
+heatmap_summary,heatmap_points_total,int64,count,heatmap,,"Sum of heatmap point counts, excluding corner-flag points"
+heatmap_summary,share_corner_flag,float64,ratio,heatmap,,Set-piece FLAG: share of raw heatmap points on the corner flags (corner kicks). Those points are excluded from every other heatmap feature
 heatmap_summary,mean_x,float64,0-100,heatmap,,"Weighted mean x (0 = own goal line, 100 = opposition goal line)"
 heatmap_summary,mean_y,float64,0-100,heatmap,,"Weighted mean y (lateral; ~0 = right touchline, ~100 = left touchline -- verified on LB/RB)"
 heatmap_summary,std_x,float64,0-100,heatmap,,Weighted std of x (vertical range)
@@ -414,7 +415,8 @@ model_features,style_ball_recoveries_share_of_def_actions,float64,ratio,derived,
 model_features,style_high_regain_share,float64,ratio,derived,,Possession won in att. third / ball recoveries
 model_features,is_set_piece_taker,bool,bool,derived,,>= 2 penalties or >= 20 corners taken
 model_features,heatmap_matches,int64,count,heatmap,,Matches contributing to the season heatmap
-model_features,heatmap_points_total,int64,count,heatmap,,Sum of heatmap point counts
+model_features,heatmap_points_total,int64,count,heatmap,,"Sum of heatmap point counts, excluding corner-flag points"
+model_features,share_corner_flag,float64,ratio,heatmap,,Set-piece FLAG: share of raw heatmap points on the corner flags (corner kicks). Those points are excluded from every other heatmap feature
 model_features,mean_x,float64,0-100,heatmap,,"Weighted mean x (0 = own goal line, 100 = opposition goal line)"
 model_features,mean_y,float64,0-100,heatmap,,"Weighted mean y (lateral; ~0 = right touchline, ~100 = left touchline -- verified on LB/RB)"
 model_features,std_x,float64,0-100,heatmap,,Weighted std of x (vertical range)
