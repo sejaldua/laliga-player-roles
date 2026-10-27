@@ -1,0 +1,458 @@
+table,column,dtype,unit,family,sofascore_key,description
+seasons,league,object,,key/dimension,,League key (laliga / epl)
+seasons,season_id,int64,,key/dimension,,Sofascore season id
+seasons,tournament_id,int64,,key/dimension,,Sofascore unique-tournament id
+seasons,season_year,object,,key/dimension,,"Season label, e.g. 25/26"
+seasons,season_name,object,,key/dimension,,Sofascore season name
+seasons,first_kickoff_date,object,date,key/dimension,,First league kickoff (start of mid-season window)
+seasons,last_kickoff_date,object,date,key/dimension,,Last league kickoff (end of mid-season window)
+seasons,min_minutes_threshold,int64,minutes,key/dimension,,Minutes cut-off used for eligibility
+seasons,penalty_xg_used,float64,xG,key/dimension,,xG per penalty used to derive npxG
+seasons,heatmap_grid,object,,key/dimension,,Zone grid used for heatmap_zones (X bins x Y bins)
+seasons,exclude_any_window_transfer,bool,bool,key/dimension,,Whether any in-window transfer also excluded players
+seasons,min_other_club_minutes,int64,minutes,key/dimension,,Minimum minutes at a second club for the player to count as a mover
+seasons,league_movers_only,bool,bool,key/dimension,,Whether only same-league second clubs counted as a move
+seasons,built_at_utc,object,datetime,key/dimension,,When this dataset was built
+teams,league,object,,key/dimension,,League key (laliga / epl)
+teams,season_id,int64,,key/dimension,,Sofascore season id
+teams,team_id,int64,,key/dimension,,Sofascore team id (league club this season)
+teams,team_name,object,,key/dimension,,Team name
+teams,team_slug,object,,key/dimension,,Sofascore URL slug
+teams,avg_possession_pct,float64,%,key/dimension,,Team season-average possession
+teams,matches,int64,count,key/dimension,,Team league matches
+players,player_id,int64,,key/dimension,,Sofascore player id (primary key across tables)
+players,player_name,object,,key/dimension,,Player name
+players,player_slug,object,,key/dimension,,Sofascore URL slug
+players,position,object,,key/dimension,,Sofascore broad position: G/D/M/F
+players,position_group,object,,key/dimension,,GK / DEF / MID / ATT
+players,primary_position_detailed,object,,key/dimension,,"First-listed detailed position (DC, DL, DR, DM, MC, AM, ML, MR, LW, RW, ST)"
+players,preferred_foot,object,,key/dimension,,Left / Right / Both
+players,height_cm,int64,cm,key/dimension,,Height
+players,date_of_birth,object,date,key/dimension,,Date of birth
+players,nationality_code,object,,key/dimension,,ISO alpha-3
+players,nationality,object,,key/dimension,,Country
+player_positions,player_id,int64,,key/dimension,,Sofascore player id (primary key across tables)
+player_positions,position_order,int64,,key/dimension,,Order Sofascore lists the detailed position in (1 = primary)
+player_positions,position_detailed,object,,key/dimension,,Detailed position code
+player_season_eligibility,league,object,,key/dimension,,League key (laliga / epl)
+player_season_eligibility,season_id,int64,,key/dimension,,Sofascore season id
+player_season_eligibility,player_id,int64,,key/dimension,,Sofascore player id (primary key across tables)
+player_season_eligibility,team_id,int64,,key/dimension,,Sofascore team id (league club this season)
+player_season_eligibility,minutes,int64,count,volume,minutesPlayed,League minutes played
+player_season_eligibility,appearances,int64,count,volume,appearances,League appearances
+player_season_eligibility,age_at_season_end,float64,years,key/dimension,,Age on the last league kickoff date
+player_season_eligibility,n_league_clubs_in_season,int64,count,key/dimension,,Distinct clubs in this league this season
+player_season_eligibility,n_clubs_in_season,int64,count,key/dimension,,"Distinct clubs (any competition, excl. national/reserve/friendlies) this season"
+player_season_eligibility,is_goalkeeper,bool,bool,key/dimension,,Rule: goalkeeper
+player_season_eligibility,is_under_min_minutes,bool,bool,key/dimension,,Rule: league minutes below threshold
+player_season_eligibility,is_multi_club_in_season,bool,bool,key/dimension,,Rule: played for another club this season (Career tab; see seasons.csv for the thresholds used)
+player_season_eligibility,has_transfer_in_window,bool,bool,key/dimension,,Transfer/loan dated inside the season window
+player_season_eligibility,is_career_unavailable,bool,bool,key/dimension,,Rule: career request failed -- re-fetch
+player_season_eligibility,has_no_season_stats,bool,bool,key/dimension,,Rule: no season stats returned
+player_season_eligibility,is_eligible,bool,bool,key/dimension,,Passes all rules -> included in model_features
+player_season_clubs,league,object,,key/dimension,,League key (laliga / epl)
+player_season_clubs,season_id,int64,,key/dimension,,Sofascore season id
+player_season_clubs,player_id,int64,,key/dimension,,Sofascore player id (primary key across tables)
+player_season_clubs,team_id,int64,,key/dimension,,Sofascore team id (league club this season)
+player_season_clubs,team_name,object,,key/dimension,,Team name
+player_season_clubs,competition_id,int64,,key/dimension,,Sofascore unique-tournament id
+player_season_clubs,competition_name,object,,key/dimension,,Competition
+player_season_clubs,competition_season_id,int64,,key/dimension,,Sofascore season id of that competition
+player_season_clubs,appearances,int64,count,volume,,Appearances in this competition for this club
+player_season_clubs,minutes,int64,minutes,volume,,Minutes in this competition for this club
+player_season_clubs,is_national_team,bool,bool,key/dimension,,Row is a national-team spell
+player_season_clubs,is_reserve_team,bool,bool,key/dimension,,Row is a B/reserve/youth side (ignored for multi-club)
+player_season_clubs,is_friendly,bool,bool,key/dimension,,Row is friendlies (ignored for multi-club)
+player_season_clubs,counts_as_club_spell,bool,bool,key/dimension,,Row counts toward n_clubs_in_season
+player_transfers,league,object,,key/dimension,,League key (laliga / epl)
+player_transfers,season_id,int64,,key/dimension,,Sofascore season id
+player_transfers,player_id,int64,,key/dimension,,Sofascore player id (primary key across tables)
+player_transfers,transfer_date,object,date,key/dimension,,Transfer date
+player_transfers,transfer_type_code,int64,,key/dimension,,"Sofascore code: 1 loan, 2 loan return, 3 transfer"
+player_transfers,transfer_type,object,,key/dimension,,loan / loan_return / transfer
+player_transfers,from_team_id,Int64,,key/dimension,,Selling/lending club id
+player_transfers,from_team_name,object,,key/dimension,,Selling/lending club
+player_transfers,to_team_id,Int64,,key/dimension,,Buying/borrowing club id
+player_transfers,to_team_name,object,,key/dimension,,Buying/borrowing club
+player_transfers,fee_description,object,,key/dimension,,Fee as shown by Sofascore
+player_transfers,in_season_window,bool,bool,derived,,Transfer dated between this season's first and last league kickoff
+player_season_stats,league,object,,key/dimension,,League key (laliga / epl)
+player_season_stats,season_id,int64,,key/dimension,,Sofascore season id
+player_season_stats,player_id,int64,,key/dimension,,Sofascore player id (primary key across tables)
+player_season_stats,team_id,int64,,key/dimension,,Sofascore team id (league club this season)
+player_season_stats,appearances,int64,count,volume,appearances,League appearances
+player_season_stats,starts,int64,count,volume,matchesStarted,League starts
+player_season_stats,minutes,int64,count,volume,minutesPlayed,League minutes played
+player_season_stats,touches,int64,count,volume,touches,Total touches
+player_season_stats,shots,int64,count,shooting,totalShots,Shots (incl. penalties)
+player_season_stats,shots_on_target,int64,count,shooting,shotsOnTarget,Shots on target
+player_season_stats,shots_inside_box,int64,count,shooting,shotsFromInsideTheBox,Shots from inside the box
+player_season_stats,shots_outside_box,int64,count,shooting,shotsFromOutsideTheBox,Shots from outside the box
+player_season_stats,xg,float64,count,shooting,expectedGoals,"xG, all shots incl. penalties"
+player_season_stats,touches_opp_box,int64,count,shooting,touchesInOppBox,Touches in the opposition box
+player_season_stats,big_chances_missed,int64,count,shooting,bigChancesMissed,Big chances missed
+player_season_stats,hit_woodwork,int64,count,shooting,hitWoodwork,Shots hitting the woodwork
+player_season_stats,goals,int64,count,finishing,goals,Goals incl. penalties
+player_season_stats,penalty_goals,int64,count,finishing,penaltyGoals,Penalty goals
+player_season_stats,headed_goals,int64,count,finishing,headedGoals,Headed goals
+player_season_stats,assists,int64,count,creation,assists,Assists
+player_season_stats,xa,float64,count,creation,expectedAssists,Expected assists
+player_season_stats,key_passes,int64,count,creation,keyPasses,Key passes
+player_season_stats,big_chances_created,int64,count,creation,bigChancesCreated,Big chances created
+player_season_stats,shot_assists,int64,count,creation,totalAttemptAssist,Passes leading to a shot (closest Sofascore proxy for pass-based SCA)
+player_season_stats,second_assists,int64,count,creation,passToAssist,Pass to the assister (second assist)
+player_season_stats,passes,int64,count,passing,totalPasses,Passes attempted
+player_season_stats,passes_completed,int64,count,passing,accuratePasses,Passes completed
+player_season_stats,own_half_passes,int64,count,passing,totalOwnHalfPasses,Passes attempted in own half
+player_season_stats,opp_half_passes,int64,count,passing,totalOppositionHalfPasses,Passes attempted in opposition half
+player_season_stats,opp_half_passes_completed,int64,count,passing,accurateOppositionHalfPasses,Opposition-half passes completed
+player_season_stats,final_third_passes_completed,int64,count,passing,accurateFinalThirdPasses,Final-third passes completed
+player_season_stats,long_balls,int64,count,passing,totalLongBalls,Long balls attempted
+player_season_stats,long_balls_completed,int64,count,passing,accurateLongBalls,Long balls completed
+player_season_stats,chipped_passes,int64,count,passing,totalChippedPasses,Chipped passes attempted
+player_season_stats,crosses,int64,count,passing,totalCross,Crosses attempted
+player_season_stats,crosses_completed,int64,count,passing,accurateCrosses,Crosses completed
+player_season_stats,take_ons,int64,count,carrying,totalContest,Take-ons (dribbles) attempted
+player_season_stats,take_ons_won,int64,count,carrying,successfulDribbles,Successful take-ons
+player_season_stats,dispossessed,int64,count,carrying,dispossessed,Times dispossessed
+player_season_stats,possession_lost,int64,count,carrying,possessionLost,Possession lost
+player_season_stats,miscontrols,int64,count,carrying,unsuccessfulTouches,Unsuccessful touches
+player_season_stats,fouls_won,int64,count,carrying,wasFouled,Fouls won
+player_season_stats,penalties_won,int64,count,carrying,penaltyWon,Penalties won
+player_season_stats,aerials_won,int64,count,duels,aerialDuelsWon,Aerial duels won
+player_season_stats,aerials_lost,int64,count,duels,aerialLost,Aerial duels lost
+player_season_stats,ground_duels_won,int64,count,duels,groundDuelsWon,Ground duels won
+player_season_stats,duels_won,int64,count,duels,totalDuelsWon,All duels won
+player_season_stats,duels_lost,int64,count,duels,duelLost,All duels lost
+player_season_stats,offsides,int64,count,duels,offsides,Caught offside (runner-in-behind signal)
+player_season_stats,tackles,int64,count,defending,tackles,Tackles
+player_season_stats,tackles_won,int64,count,defending,tacklesWon,Tackles won
+player_season_stats,interceptions,int64,count,defending,interceptions,Interceptions
+player_season_stats,clearances,int64,count,defending,clearances,Clearances
+player_season_stats,blocks,int64,count,defending,outfielderBlocks,Blocks
+player_season_stats,ball_recoveries,int64,count,defending,ballRecovery,Ball recoveries
+player_season_stats,possession_won_att_third,int64,count,defending,possessionWonAttThird,Possession won in the attacking third
+player_season_stats,dribbled_past,int64,count,defending,dribbledPast,Times dribbled past
+player_season_stats,errors_to_shot,int64,count,defending,errorLeadToShot,Errors leading to a shot
+player_season_stats,errors_to_goal,int64,count,defending,errorLeadToGoal,Errors leading to a goal
+player_season_stats,fouls_committed,int64,count,defending,fouls,Fouls committed
+player_season_stats,penalties_conceded,int64,count,defending,penaltyConceded,Penalties conceded
+player_season_stats,defensive_contributions,int64,count,defending,defensiveContributions,Sofascore defensive contributions
+player_season_stats,distance_km,float64,count,physical,kilometersCovered,"Distance covered, km (tracking coverage varies)"
+player_season_stats,sprints,Int64,count,physical,numberOfSprints,Sprints (tracking coverage varies)
+player_season_stats,high_speed_running_m,float64,count,physical,metersCoveredHighSpeedRunning,"High-speed running, metres (coverage varies)"
+player_season_stats,top_speed_kmh,float64,count,physical,topSpeed,"Top speed, km/h (not a count)"
+player_season_stats,sp_penalties_taken,int64,count,set_piece_flags,penaltiesTaken,"Set-piece FLAG, not a role feature: penalties taken"
+player_season_stats,sp_corners_taken,int64,count,set_piece_flags,cornersTaken,Set-piece FLAG: corners taken
+player_season_stats,sp_shots_from_set_piece,int64,count,set_piece_flags,shotFromSetPiece,Set-piece FLAG: shots from set pieces
+player_season_stats,sp_free_kick_goals,int64,count,set_piece_flags,freeKickGoal,Set-piece FLAG: direct free-kick goals
+player_season_stats,yellow_cards,int64,count,discipline,yellowCards,Yellow cards
+player_season_stats,red_cards,int64,count,discipline,redCards,Red cards
+player_season_stats,np_shots,int64,count,derived,,Non-penalty shots = shots - penalties taken
+player_season_stats,npxg,float64,xG,derived,,Non-penalty xG = xg - pen_xg x penalties taken
+player_season_stats,np_goals,int64,count,derived,,Non-penalty goals
+player_season_stats,npg_minus_npxg,float64,goals,derived,,Non-penalty goals minus npxG (finishing over/under-performance)
+player_season_stats,npxg_per_shot,float64,xG/shot,derived,,npxG per non-penalty shot (shot quality)
+player_season_stats,np_conversion_pct,float64,%,derived,,Non-penalty goals / non-penalty shots
+player_season_stats,shots_on_target_pct,float64,%,derived,,Shots on target / shots
+player_season_stats,npxg_plus_xa,float64,xG,derived,,npxG + xA
+player_season_stats,aerials_contested,int64,count,derived,,Aerial duels won + lost
+player_season_stats,aerial_win_pct,float64,%,derived,,Aerial duels won / contested
+player_season_stats,take_on_success_pct,float64,%,derived,,Successful take-ons / attempted
+player_season_stats,cross_accuracy_pct,float64,%,derived,,Crosses completed / attempted
+player_season_stats,pass_accuracy_pct,float64,%,derived,,Passes completed / attempted
+player_season_stats,long_ball_accuracy_pct,float64,%,derived,,Long balls completed / attempted
+player_season_stats,tackle_success_pct,float64,%,derived,,Tackles won / tackles
+player_season_stats,tackles_interceptions,int64,count,derived,,Tackles + interceptions
+player_season_stats,padj_tackles,float64,count,derived,,Tackles x 50 / opponent possession % (team season average)
+player_season_stats,padj_interceptions,float64,count,derived,,"Interceptions, possession-adjusted as above"
+player_season_stats,padj_tackles_interceptions,float64,count,derived,,"Tackles + interceptions, possession-adjusted"
+player_season_stats,padj_clearances,float64,count,derived,,"Clearances, possession-adjusted"
+player_season_stats,style_box_touch_share,float64,ratio,derived,,Opp-box touches / touches
+player_season_stats,style_shots_per_touch,float64,ratio,derived,,Shots / touches
+player_season_stats,style_take_ons_per_touch,float64,ratio,derived,,Take-ons attempted / touches
+player_season_stats,style_passes_per_touch,float64,ratio,derived,,Passes / touches
+player_season_stats,style_opp_half_pass_share,float64,ratio,derived,,Opposition-half passes / passes
+player_season_stats,style_long_ball_share,float64,ratio,derived,,Long balls / passes
+player_season_stats,style_cross_share,float64,ratio,derived,,Crosses / passes
+player_season_stats,style_key_pass_share,float64,ratio,derived,,Key passes / passes
+player_season_stats,style_final_third_pass_share,float64,ratio,derived,,Final-third completions / completions
+player_season_stats,style_aerial_share_of_duels,float64,ratio,derived,,Aerial duels / all duels
+player_season_stats,style_def_actions_per_touch,float64,ratio,derived,,(tackles+interceptions+clearances+blocks+recoveries) / touches
+player_season_stats,style_tackles_share_of_def_actions,float64,ratio,derived,,Tackles / defensive actions
+player_season_stats,style_interceptions_share_of_def_actions,float64,ratio,derived,,Interceptions / defensive actions
+player_season_stats,style_clearances_share_of_def_actions,float64,ratio,derived,,Clearances / defensive actions
+player_season_stats,style_blocks_share_of_def_actions,float64,ratio,derived,,Blocks / defensive actions
+player_season_stats,style_ball_recoveries_share_of_def_actions,float64,ratio,derived,,Recoveries / defensive actions
+player_season_stats,style_high_regain_share,float64,ratio,derived,,Possession won in att. third / ball recoveries
+player_season_stats,is_set_piece_taker,bool,bool,derived,,>= 2 penalties or >= 20 corners taken
+player_season_per90,league,object,,key/dimension,,League key (laliga / epl)
+player_season_per90,season_id,int64,,key/dimension,,Sofascore season id
+player_season_per90,player_id,int64,,key/dimension,,Sofascore player id (primary key across tables)
+player_season_per90,team_id,int64,,key/dimension,,Sofascore team id (league club this season)
+player_season_per90,minutes,int64,count,volume,minutesPlayed,League minutes played
+player_season_per90,touches_p90,float64,per 90,per90,,Total touches per 90 minutes
+player_season_per90,shots_p90,float64,per 90,per90,,Shots (incl. penalties) per 90 minutes
+player_season_per90,shots_on_target_p90,float64,per 90,per90,,Shots on target per 90 minutes
+player_season_per90,shots_inside_box_p90,float64,per 90,per90,,Shots from inside the box per 90 minutes
+player_season_per90,shots_outside_box_p90,float64,per 90,per90,,Shots from outside the box per 90 minutes
+player_season_per90,xg_p90,float64,per 90,per90,,"xG, all shots incl. penalties per 90 minutes"
+player_season_per90,touches_opp_box_p90,float64,per 90,per90,,Touches in the opposition box per 90 minutes
+player_season_per90,big_chances_missed_p90,float64,per 90,per90,,Big chances missed per 90 minutes
+player_season_per90,hit_woodwork_p90,float64,per 90,per90,,Shots hitting the woodwork per 90 minutes
+player_season_per90,goals_p90,float64,per 90,per90,,Goals incl. penalties per 90 minutes
+player_season_per90,penalty_goals_p90,float64,per 90,per90,,Penalty goals per 90 minutes
+player_season_per90,headed_goals_p90,float64,per 90,per90,,Headed goals per 90 minutes
+player_season_per90,assists_p90,float64,per 90,per90,,Assists per 90 minutes
+player_season_per90,xa_p90,float64,per 90,per90,,Expected assists per 90 minutes
+player_season_per90,key_passes_p90,float64,per 90,per90,,Key passes per 90 minutes
+player_season_per90,big_chances_created_p90,float64,per 90,per90,,Big chances created per 90 minutes
+player_season_per90,shot_assists_p90,float64,per 90,per90,,Passes leading to a shot (closest Sofascore proxy for pass-based SCA) per 90 minutes
+player_season_per90,second_assists_p90,float64,per 90,per90,,Pass to the assister (second assist) per 90 minutes
+player_season_per90,passes_p90,float64,per 90,per90,,Passes attempted per 90 minutes
+player_season_per90,passes_completed_p90,float64,per 90,per90,,Passes completed per 90 minutes
+player_season_per90,own_half_passes_p90,float64,per 90,per90,,Passes attempted in own half per 90 minutes
+player_season_per90,opp_half_passes_p90,float64,per 90,per90,,Passes attempted in opposition half per 90 minutes
+player_season_per90,opp_half_passes_completed_p90,float64,per 90,per90,,Opposition-half passes completed per 90 minutes
+player_season_per90,final_third_passes_completed_p90,float64,per 90,per90,,Final-third passes completed per 90 minutes
+player_season_per90,long_balls_p90,float64,per 90,per90,,Long balls attempted per 90 minutes
+player_season_per90,long_balls_completed_p90,float64,per 90,per90,,Long balls completed per 90 minutes
+player_season_per90,chipped_passes_p90,float64,per 90,per90,,Chipped passes attempted per 90 minutes
+player_season_per90,crosses_p90,float64,per 90,per90,,Crosses attempted per 90 minutes
+player_season_per90,crosses_completed_p90,float64,per 90,per90,,Crosses completed per 90 minutes
+player_season_per90,take_ons_p90,float64,per 90,per90,,Take-ons (dribbles) attempted per 90 minutes
+player_season_per90,take_ons_won_p90,float64,per 90,per90,,Successful take-ons per 90 minutes
+player_season_per90,dispossessed_p90,float64,per 90,per90,,Times dispossessed per 90 minutes
+player_season_per90,possession_lost_p90,float64,per 90,per90,,Possession lost per 90 minutes
+player_season_per90,miscontrols_p90,float64,per 90,per90,,Unsuccessful touches per 90 minutes
+player_season_per90,fouls_won_p90,float64,per 90,per90,,Fouls won per 90 minutes
+player_season_per90,penalties_won_p90,float64,per 90,per90,,Penalties won per 90 minutes
+player_season_per90,aerials_won_p90,float64,per 90,per90,,Aerial duels won per 90 minutes
+player_season_per90,aerials_lost_p90,float64,per 90,per90,,Aerial duels lost per 90 minutes
+player_season_per90,ground_duels_won_p90,float64,per 90,per90,,Ground duels won per 90 minutes
+player_season_per90,duels_won_p90,float64,per 90,per90,,All duels won per 90 minutes
+player_season_per90,duels_lost_p90,float64,per 90,per90,,All duels lost per 90 minutes
+player_season_per90,offsides_p90,float64,per 90,per90,,Caught offside (runner-in-behind signal) per 90 minutes
+player_season_per90,tackles_p90,float64,per 90,per90,,Tackles per 90 minutes
+player_season_per90,tackles_won_p90,float64,per 90,per90,,Tackles won per 90 minutes
+player_season_per90,interceptions_p90,float64,per 90,per90,,Interceptions per 90 minutes
+player_season_per90,clearances_p90,float64,per 90,per90,,Clearances per 90 minutes
+player_season_per90,blocks_p90,float64,per 90,per90,,Blocks per 90 minutes
+player_season_per90,ball_recoveries_p90,float64,per 90,per90,,Ball recoveries per 90 minutes
+player_season_per90,possession_won_att_third_p90,float64,per 90,per90,,Possession won in the attacking third per 90 minutes
+player_season_per90,dribbled_past_p90,float64,per 90,per90,,Times dribbled past per 90 minutes
+player_season_per90,errors_to_shot_p90,float64,per 90,per90,,Errors leading to a shot per 90 minutes
+player_season_per90,errors_to_goal_p90,float64,per 90,per90,,Errors leading to a goal per 90 minutes
+player_season_per90,fouls_committed_p90,float64,per 90,per90,,Fouls committed per 90 minutes
+player_season_per90,penalties_conceded_p90,float64,per 90,per90,,Penalties conceded per 90 minutes
+player_season_per90,defensive_contributions_p90,float64,per 90,per90,,Sofascore defensive contributions per 90 minutes
+player_season_per90,distance_km_p90,float64,per 90,per90,,"Distance covered, km (tracking coverage varies) per 90 minutes"
+player_season_per90,sprints_p90,float64,per 90,per90,,Sprints (tracking coverage varies) per 90 minutes
+player_season_per90,high_speed_running_m_p90,float64,per 90,per90,,"High-speed running, metres (coverage varies) per 90 minutes"
+player_season_per90,yellow_cards_p90,float64,per 90,per90,,Yellow cards per 90 minutes
+player_season_per90,red_cards_p90,float64,per 90,per90,,Red cards per 90 minutes
+player_season_per90,np_shots_p90,float64,per 90,per90,,Non-penalty shots = shots - penalties taken per 90 minutes
+player_season_per90,npxg_p90,float64,per 90,per90,,Non-penalty xG = xg - pen_xg x penalties taken per 90 minutes
+player_season_per90,np_goals_p90,float64,per 90,per90,,Non-penalty goals per 90 minutes
+player_season_per90,npg_minus_npxg_p90,float64,per 90,per90,,Non-penalty goals minus npxG (finishing over/under-performance) per 90 minutes
+player_season_per90,npxg_plus_xa_p90,float64,per 90,per90,,npxG + xA per 90 minutes
+player_season_per90,aerials_contested_p90,float64,per 90,per90,,Aerial duels won + lost per 90 minutes
+player_season_per90,tackles_interceptions_p90,float64,per 90,per90,,Tackles + interceptions per 90 minutes
+player_season_per90,padj_tackles_p90,float64,per 90,per90,,Tackles x 50 / opponent possession % (team season average) per 90 minutes
+player_season_per90,padj_interceptions_p90,float64,per 90,per90,,"Interceptions, possession-adjusted as above per 90 minutes"
+player_season_per90,padj_tackles_interceptions_p90,float64,per 90,per90,,"Tackles + interceptions, possession-adjusted per 90 minutes"
+player_season_per90,padj_clearances_p90,float64,per 90,per90,,"Clearances, possession-adjusted per 90 minutes"
+heatmap_points,league,object,,key/dimension,,League key (laliga / epl)
+heatmap_points,season_id,int64,,key/dimension,,Sofascore season id
+heatmap_points,player_id,int64,,key/dimension,,Sofascore player id (primary key across tables)
+heatmap_points,x,int64,0-100,key/dimension,,"Heatmap x (0 = own goal line, 100 = opposition goal line)"
+heatmap_points,y,int64,0-100,key/dimension,,"Heatmap y (~0 = right touchline, ~100 = left)"
+heatmap_points,count,int64,count,key/dimension,,Touches/actions recorded at this point
+heatmap_zones,league,object,,key/dimension,,League key (laliga / epl)
+heatmap_zones,season_id,int64,,key/dimension,,Sofascore season id
+heatmap_zones,player_id,int64,,key/dimension,,Sofascore player id (primary key across tables)
+heatmap_zones,zone_x,int64,,key/dimension,,Zone column index (0 = own goal end)
+heatmap_zones,zone_y,int64,,key/dimension,,Zone row index (0 = right flank)
+heatmap_zones,x_min,float64,0-100,key/dimension,,Zone bound
+heatmap_zones,x_max,float64,0-100,key/dimension,,Zone bound
+heatmap_zones,y_min,Int64,0-100,key/dimension,,Zone bound
+heatmap_zones,y_max,Int64,0-100,key/dimension,,Zone bound
+heatmap_zones,share,float64,ratio,key/dimension,,Share of the player's heatmap points in this zone (sums to 1 per player)
+heatmap_summary,league,object,,key/dimension,,League key (laliga / epl)
+heatmap_summary,season_id,int64,,key/dimension,,Sofascore season id
+heatmap_summary,player_id,int64,,key/dimension,,Sofascore player id (primary key across tables)
+heatmap_summary,heatmap_matches,int64,count,heatmap,,Matches contributing to the season heatmap
+heatmap_summary,heatmap_points_total,int64,count,heatmap,,Sum of heatmap point counts
+heatmap_summary,mean_x,float64,0-100,heatmap,,"Weighted mean x (0 = own goal line, 100 = opposition goal line)"
+heatmap_summary,mean_y,float64,0-100,heatmap,,"Weighted mean y (lateral; ~0 = right touchline, ~100 = left touchline -- verified on LB/RB)"
+heatmap_summary,std_x,float64,0-100,heatmap,,Weighted std of x (vertical range)
+heatmap_summary,std_y,float64,0-100,heatmap,,Weighted std of y (lateral range)
+heatmap_summary,mean_abs_width,float64,0-50,heatmap,,"Weighted mean |y - 50| (0 = central, 50 = touchline)"
+heatmap_summary,share_def_third,float64,ratio,heatmap,,Share of points with x < 33.3
+heatmap_summary,share_mid_third,float64,ratio,heatmap,,Share with 33.3 <= x < 66.7
+heatmap_summary,share_att_third,float64,ratio,heatmap,,Share with x >= 66.7
+heatmap_summary,share_wide,float64,ratio,heatmap,,Share with y < 20 or y > 80
+heatmap_summary,share_central_lane,float64,ratio,heatmap,,Share with 40 <= y <= 60
+heatmap_summary,share_opp_box,float64,ratio,heatmap,,Share inside the opposition penalty box (approx.)
+model_features,league,object,,key/dimension,,League key (laliga / epl)
+model_features,season_id,int64,,key/dimension,,Sofascore season id
+model_features,player_id,int64,,key/dimension,,Sofascore player id (primary key across tables)
+model_features,player_name,object,,key/dimension,,Player name
+model_features,team_id,int64,,key/dimension,,Sofascore team id (league club this season)
+model_features,team_name,object,,key/dimension,,Team name
+model_features,position,object,,key/dimension,,Sofascore broad position: G/D/M/F
+model_features,position_group,object,,key/dimension,,GK / DEF / MID / ATT
+model_features,primary_position_detailed,object,,key/dimension,,"First-listed detailed position (DC, DL, DR, DM, MC, AM, ML, MR, LW, RW, ST)"
+model_features,preferred_foot,object,,key/dimension,,Left / Right / Both
+model_features,height_cm,int64,cm,key/dimension,,Height
+model_features,age_at_season_end,float64,years,key/dimension,,Age on the last league kickoff date
+model_features,avg_possession_pct,float64,%,key/dimension,,Team season-average possession
+model_features,appearances,int64,count,volume,appearances,League appearances
+model_features,starts,int64,count,volume,matchesStarted,League starts
+model_features,minutes,int64,count,volume,minutesPlayed,League minutes played
+model_features,touches,int64,count,volume,touches,Total touches
+model_features,shots,int64,count,shooting,totalShots,Shots (incl. penalties)
+model_features,shots_on_target,int64,count,shooting,shotsOnTarget,Shots on target
+model_features,shots_inside_box,int64,count,shooting,shotsFromInsideTheBox,Shots from inside the box
+model_features,shots_outside_box,int64,count,shooting,shotsFromOutsideTheBox,Shots from outside the box
+model_features,xg,float64,count,shooting,expectedGoals,"xG, all shots incl. penalties"
+model_features,touches_opp_box,int64,count,shooting,touchesInOppBox,Touches in the opposition box
+model_features,big_chances_missed,int64,count,shooting,bigChancesMissed,Big chances missed
+model_features,hit_woodwork,int64,count,shooting,hitWoodwork,Shots hitting the woodwork
+model_features,goals,int64,count,finishing,goals,Goals incl. penalties
+model_features,penalty_goals,int64,count,finishing,penaltyGoals,Penalty goals
+model_features,headed_goals,int64,count,finishing,headedGoals,Headed goals
+model_features,assists,int64,count,creation,assists,Assists
+model_features,xa,float64,count,creation,expectedAssists,Expected assists
+model_features,key_passes,int64,count,creation,keyPasses,Key passes
+model_features,big_chances_created,int64,count,creation,bigChancesCreated,Big chances created
+model_features,shot_assists,int64,count,creation,totalAttemptAssist,Passes leading to a shot (closest Sofascore proxy for pass-based SCA)
+model_features,second_assists,int64,count,creation,passToAssist,Pass to the assister (second assist)
+model_features,passes,int64,count,passing,totalPasses,Passes attempted
+model_features,passes_completed,int64,count,passing,accuratePasses,Passes completed
+model_features,own_half_passes,int64,count,passing,totalOwnHalfPasses,Passes attempted in own half
+model_features,opp_half_passes,int64,count,passing,totalOppositionHalfPasses,Passes attempted in opposition half
+model_features,opp_half_passes_completed,int64,count,passing,accurateOppositionHalfPasses,Opposition-half passes completed
+model_features,final_third_passes_completed,int64,count,passing,accurateFinalThirdPasses,Final-third passes completed
+model_features,long_balls,int64,count,passing,totalLongBalls,Long balls attempted
+model_features,long_balls_completed,int64,count,passing,accurateLongBalls,Long balls completed
+model_features,chipped_passes,int64,count,passing,totalChippedPasses,Chipped passes attempted
+model_features,crosses,int64,count,passing,totalCross,Crosses attempted
+model_features,crosses_completed,int64,count,passing,accurateCrosses,Crosses completed
+model_features,take_ons,int64,count,carrying,totalContest,Take-ons (dribbles) attempted
+model_features,take_ons_won,int64,count,carrying,successfulDribbles,Successful take-ons
+model_features,dispossessed,int64,count,carrying,dispossessed,Times dispossessed
+model_features,possession_lost,int64,count,carrying,possessionLost,Possession lost
+model_features,miscontrols,int64,count,carrying,unsuccessfulTouches,Unsuccessful touches
+model_features,fouls_won,int64,count,carrying,wasFouled,Fouls won
+model_features,penalties_won,int64,count,carrying,penaltyWon,Penalties won
+model_features,aerials_won,int64,count,duels,aerialDuelsWon,Aerial duels won
+model_features,aerials_lost,int64,count,duels,aerialLost,Aerial duels lost
+model_features,ground_duels_won,int64,count,duels,groundDuelsWon,Ground duels won
+model_features,duels_won,int64,count,duels,totalDuelsWon,All duels won
+model_features,duels_lost,int64,count,duels,duelLost,All duels lost
+model_features,offsides,int64,count,duels,offsides,Caught offside (runner-in-behind signal)
+model_features,tackles,int64,count,defending,tackles,Tackles
+model_features,tackles_won,int64,count,defending,tacklesWon,Tackles won
+model_features,interceptions,int64,count,defending,interceptions,Interceptions
+model_features,clearances,int64,count,defending,clearances,Clearances
+model_features,blocks,int64,count,defending,outfielderBlocks,Blocks
+model_features,ball_recoveries,int64,count,defending,ballRecovery,Ball recoveries
+model_features,possession_won_att_third,int64,count,defending,possessionWonAttThird,Possession won in the attacking third
+model_features,dribbled_past,int64,count,defending,dribbledPast,Times dribbled past
+model_features,errors_to_shot,int64,count,defending,errorLeadToShot,Errors leading to a shot
+model_features,errors_to_goal,int64,count,defending,errorLeadToGoal,Errors leading to a goal
+model_features,fouls_committed,int64,count,defending,fouls,Fouls committed
+model_features,penalties_conceded,int64,count,defending,penaltyConceded,Penalties conceded
+model_features,defensive_contributions,int64,count,defending,defensiveContributions,Sofascore defensive contributions
+model_features,distance_km,float64,count,physical,kilometersCovered,"Distance covered, km (tracking coverage varies)"
+model_features,sprints,Int64,count,physical,numberOfSprints,Sprints (tracking coverage varies)
+model_features,high_speed_running_m,float64,count,physical,metersCoveredHighSpeedRunning,"High-speed running, metres (coverage varies)"
+model_features,top_speed_kmh,float64,count,physical,topSpeed,"Top speed, km/h (not a count)"
+model_features,sp_penalties_taken,int64,count,set_piece_flags,penaltiesTaken,"Set-piece FLAG, not a role feature: penalties taken"
+model_features,sp_corners_taken,int64,count,set_piece_flags,cornersTaken,Set-piece FLAG: corners taken
+model_features,sp_shots_from_set_piece,int64,count,set_piece_flags,shotFromSetPiece,Set-piece FLAG: shots from set pieces
+model_features,sp_free_kick_goals,int64,count,set_piece_flags,freeKickGoal,Set-piece FLAG: direct free-kick goals
+model_features,yellow_cards,int64,count,discipline,yellowCards,Yellow cards
+model_features,red_cards,int64,count,discipline,redCards,Red cards
+model_features,np_shots,int64,count,derived,,Non-penalty shots = shots - penalties taken
+model_features,npxg,float64,xG,derived,,Non-penalty xG = xg - pen_xg x penalties taken
+model_features,np_goals,int64,count,derived,,Non-penalty goals
+model_features,npg_minus_npxg,float64,goals,derived,,Non-penalty goals minus npxG (finishing over/under-performance)
+model_features,npxg_per_shot,float64,xG/shot,derived,,npxG per non-penalty shot (shot quality)
+model_features,np_conversion_pct,float64,%,derived,,Non-penalty goals / non-penalty shots
+model_features,shots_on_target_pct,float64,%,derived,,Shots on target / shots
+model_features,npxg_plus_xa,float64,xG,derived,,npxG + xA
+model_features,aerials_contested,int64,count,derived,,Aerial duels won + lost
+model_features,aerial_win_pct,float64,%,derived,,Aerial duels won / contested
+model_features,take_on_success_pct,float64,%,derived,,Successful take-ons / attempted
+model_features,cross_accuracy_pct,float64,%,derived,,Crosses completed / attempted
+model_features,pass_accuracy_pct,float64,%,derived,,Passes completed / attempted
+model_features,long_ball_accuracy_pct,float64,%,derived,,Long balls completed / attempted
+model_features,tackle_success_pct,float64,%,derived,,Tackles won / tackles
+model_features,tackles_interceptions,int64,count,derived,,Tackles + interceptions
+model_features,padj_tackles,float64,count,derived,,Tackles x 50 / opponent possession % (team season average)
+model_features,padj_interceptions,float64,count,derived,,"Interceptions, possession-adjusted as above"
+model_features,padj_tackles_interceptions,float64,count,derived,,"Tackles + interceptions, possession-adjusted"
+model_features,padj_clearances,float64,count,derived,,"Clearances, possession-adjusted"
+model_features,style_box_touch_share,float64,ratio,derived,,Opp-box touches / touches
+model_features,style_shots_per_touch,float64,ratio,derived,,Shots / touches
+model_features,style_take_ons_per_touch,float64,ratio,derived,,Take-ons attempted / touches
+model_features,style_passes_per_touch,float64,ratio,derived,,Passes / touches
+model_features,style_opp_half_pass_share,float64,ratio,derived,,Opposition-half passes / passes
+model_features,style_long_ball_share,float64,ratio,derived,,Long balls / passes
+model_features,style_cross_share,float64,ratio,derived,,Crosses / passes
+model_features,style_key_pass_share,float64,ratio,derived,,Key passes / passes
+model_features,style_final_third_pass_share,float64,ratio,derived,,Final-third completions / completions
+model_features,style_aerial_share_of_duels,float64,ratio,derived,,Aerial duels / all duels
+model_features,style_def_actions_per_touch,float64,ratio,derived,,(tackles+interceptions+clearances+blocks+recoveries) / touches
+model_features,style_tackles_share_of_def_actions,float64,ratio,derived,,Tackles / defensive actions
+model_features,style_interceptions_share_of_def_actions,float64,ratio,derived,,Interceptions / defensive actions
+model_features,style_clearances_share_of_def_actions,float64,ratio,derived,,Clearances / defensive actions
+model_features,style_blocks_share_of_def_actions,float64,ratio,derived,,Blocks / defensive actions
+model_features,style_ball_recoveries_share_of_def_actions,float64,ratio,derived,,Recoveries / defensive actions
+model_features,style_high_regain_share,float64,ratio,derived,,Possession won in att. third / ball recoveries
+model_features,is_set_piece_taker,bool,bool,derived,,>= 2 penalties or >= 20 corners taken
+model_features,heatmap_matches,int64,count,heatmap,,Matches contributing to the season heatmap
+model_features,heatmap_points_total,int64,count,heatmap,,Sum of heatmap point counts
+model_features,mean_x,float64,0-100,heatmap,,"Weighted mean x (0 = own goal line, 100 = opposition goal line)"
+model_features,mean_y,float64,0-100,heatmap,,"Weighted mean y (lateral; ~0 = right touchline, ~100 = left touchline -- verified on LB/RB)"
+model_features,std_x,float64,0-100,heatmap,,Weighted std of x (vertical range)
+model_features,std_y,float64,0-100,heatmap,,Weighted std of y (lateral range)
+model_features,mean_abs_width,float64,0-50,heatmap,,"Weighted mean |y - 50| (0 = central, 50 = touchline)"
+model_features,share_def_third,float64,ratio,heatmap,,Share of points with x < 33.3
+model_features,share_mid_third,float64,ratio,heatmap,,Share with 33.3 <= x < 66.7
+model_features,share_att_third,float64,ratio,heatmap,,Share with x >= 66.7
+model_features,share_wide,float64,ratio,heatmap,,Share with y < 20 or y > 80
+model_features,share_central_lane,float64,ratio,heatmap,,Share with 40 <= y <= 60
+model_features,share_opp_box,float64,ratio,heatmap,,Share inside the opposition penalty box (approx.)
+model_features,zone_x0_y0,float64,ratio,heatmap,,Share of heatmap points in zone x0_y0 (6x5 grid)
+model_features,zone_x0_y1,float64,ratio,heatmap,,Share of heatmap points in zone x0_y1 (6x5 grid)
+model_features,zone_x0_y2,float64,ratio,heatmap,,Share of heatmap points in zone x0_y2 (6x5 grid)
+model_features,zone_x0_y3,float64,ratio,heatmap,,Share of heatmap points in zone x0_y3 (6x5 grid)
+model_features,zone_x0_y4,float64,ratio,heatmap,,Share of heatmap points in zone x0_y4 (6x5 grid)
+model_features,zone_x1_y0,float64,ratio,heatmap,,Share of heatmap points in zone x1_y0 (6x5 grid)
+model_features,zone_x1_y1,float64,ratio,heatmap,,Share of heatmap points in zone x1_y1 (6x5 grid)
+model_features,zone_x1_y2,float64,ratio,heatmap,,Share of heatmap points in zone x1_y2 (6x5 grid)
+model_features,zone_x1_y3,float64,ratio,heatmap,,Share of heatmap points in zone x1_y3 (6x5 grid)
+model_features,zone_x1_y4,float64,ratio,heatmap,,Share of heatmap points in zone x1_y4 (6x5 grid)
+model_features,zone_x2_y0,float64,ratio,heatmap,,Share of heatmap points in zone x2_y0 (6x5 grid)
+model_features,zone_x2_y1,float64,ratio,heatmap,,Share of heatmap points in zone x2_y1 (6x5 grid)
+model_features,zone_x2_y2,float64,ratio,heatmap,,Share of heatmap points in zone x2_y2 (6x5 grid)
+model_features,zone_x2_y3,float64,ratio,heatmap,,Share of heatmap points in zone x2_y3 (6x5 grid)
+model_features,zone_x2_y4,float64,ratio,heatmap,,Share of heatmap points in zone x2_y4 (6x5 grid)
+model_features,zone_x3_y0,float64,ratio,heatmap,,Share of heatmap points in zone x3_y0 (6x5 grid)
+model_features,zone_x3_y1,float64,ratio,heatmap,,Share of heatmap points in zone x3_y1 (6x5 grid)
+model_features,zone_x3_y2,float64,ratio,heatmap,,Share of heatmap points in zone x3_y2 (6x5 grid)
+model_features,zone_x3_y3,float64,ratio,heatmap,,Share of heatmap points in zone x3_y3 (6x5 grid)
+model_features,zone_x3_y4,float64,ratio,heatmap,,Share of heatmap points in zone x3_y4 (6x5 grid)
+model_features,zone_x4_y0,float64,ratio,heatmap,,Share of heatmap points in zone x4_y0 (6x5 grid)
+model_features,zone_x4_y1,float64,ratio,heatmap,,Share of heatmap points in zone x4_y1 (6x5 grid)
+model_features,zone_x4_y2,float64,ratio,heatmap,,Share of heatmap points in zone x4_y2 (6x5 grid)
+model_features,zone_x4_y3,float64,ratio,heatmap,,Share of heatmap points in zone x4_y3 (6x5 grid)
+model_features,zone_x4_y4,float64,ratio,heatmap,,Share of heatmap points in zone x4_y4 (6x5 grid)
+model_features,zone_x5_y0,float64,ratio,heatmap,,Share of heatmap points in zone x5_y0 (6x5 grid)
+model_features,zone_x5_y1,float64,ratio,heatmap,,Share of heatmap points in zone x5_y1 (6x5 grid)
+model_features,zone_x5_y2,float64,ratio,heatmap,,Share of heatmap points in zone x5_y2 (6x5 grid)
+model_features,zone_x5_y3,float64,ratio,heatmap,,Share of heatmap points in zone x5_y3 (6x5 grid)
+model_features,zone_x5_y4,float64,ratio,heatmap,,Share of heatmap points in zone x5_y4 (6x5 grid)

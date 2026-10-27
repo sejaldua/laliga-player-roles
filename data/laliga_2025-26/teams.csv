@@ -1,0 +1,21 @@
+league,season_id,team_id,team_name,team_slug,avg_possession_pct,matches
+laliga,77559,2825,Athletic Club,athletic-club,48.6053,38
+laliga,77559,2836,Atlético Madrid,atletico-madrid,53.3158,38
+laliga,77559,2821,Celta Vigo,celta-vigo,50.3947,38
+laliga,77559,2885,Deportivo Alavés,deportivo-alaves,48.0526,38
+laliga,77559,2846,Elche,elche,57.7105,38
+laliga,77559,2814,Espanyol,espanyol,42.3421,38
+laliga,77559,2817,FC Barcelona,barcelona,68.7895,38
+laliga,77559,2859,Getafe,getafe,40.0789,38
+laliga,77559,24264,Girona FC,girona-fc,50.6579,38
+laliga,77559,2849,Levante UD,levante-ud,42.8158,38
+laliga,77559,2826,Mallorca,mallorca,47,38
+laliga,77559,2820,Osasuna,osasuna,46.8421,38
+laliga,77559,2818,Rayo Vallecano,rayo-vallecano,53.4474,38
+laliga,77559,2816,Real Betis,real-betis,50.1579,38
+laliga,77559,2829,Real Madrid,real-madrid,59.3947,38
+laliga,77559,2851,Real Oviedo,real-oviedo,46.0263,38
+laliga,77559,2824,Real Sociedad,real-sociedad,51.2632,38
+laliga,77559,2833,Sevilla,sevilla,50.9211,38
+laliga,77559,2828,Valencia,valencia,47.6579,38
+laliga,77559,2819,Villarreal,villarreal,44.5263,38
